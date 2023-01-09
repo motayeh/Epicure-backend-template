@@ -1,4 +1,4 @@
-import { RestaurantsDal } from "../dal/restaurants.dal";
+import { RestaurantsDal } from '../dal/restaurants.dal';
 
 export class RestaurantsService {
   public async getRestaurants() {

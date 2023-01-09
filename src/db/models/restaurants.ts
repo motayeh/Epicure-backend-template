@@ -97,6 +97,10 @@ const restaurantsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    chefID: {
+      type: Number,
+      required: true,
+    },
     image: {
       type: String,
     },

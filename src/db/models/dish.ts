@@ -41,7 +41,7 @@ const dishSchema = new mongoose.Schema({
   DishDescreption: {
     type: String,
   },
-  FoodType: {
+  FoodCategory: {
     type: String,
   },
   Meals: {

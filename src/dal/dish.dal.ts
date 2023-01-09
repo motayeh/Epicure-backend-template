@@ -32,7 +32,7 @@ export class DishDal {
       Sides: dish.Sides,
     });
     const response = await Dish.create(dish);
-    const result = await Dish.findOne({ ID: response.ID }).updateOne({
+    const result = await Dish.find({ ID: response.ID }).updateMany({
       $push: { dish: response._id },
     });
     return response;
