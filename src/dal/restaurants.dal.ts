@@ -1,3 +1,4 @@
+import { Aggregate } from 'mongoose';
 import Chefs from '../db/models/chefs';
 import Restaurants from '../db/models/restaurants';
 
@@ -25,6 +26,43 @@ export class RestaurantsDal {
       {
         $project: {
           _id: false,
+        },
+      },
+    ]);
+    return data;
+  }
+  public async mostPopularRestaurants() {
+    const data = await Restaurants.aggregate([
+      {
+        $sort: { rate: -1 },
+      },
+      {
+        $project: {
+          name: true,
+          _id: false,
+          image: true,
+          chef: true,
+        },
+      },
+      {
+        $limit: 3,
+      },
+    ]);
+    return data;
+  }
+  public async findDishesOfResturant(param: { [key: string]: string }) {
+    const data = await Restaurants.aggregate([
+      {
+        $match: {
+          id: param.ID,
+        },
+      },
+      {
+        $lookup: {
+          from: 'dishes',
+          localField: 'id',
+          foreignField: 'ResturantID',
+          as: 'dishes',
         },
       },
     ]);

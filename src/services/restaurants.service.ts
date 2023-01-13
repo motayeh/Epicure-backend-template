@@ -12,4 +12,15 @@ export class RestaurantsService {
     const res = dal.createRestaurant(restaurant);
     return res;
   }
+  public async getDishOfRestaurant(restaurant: any) {
+    const dal = new RestaurantsDal();
+    const res = dal.findDishesOfResturant(restaurant);
+    return res;
+  }
+
+  public async mostPopularRestaurants() {
+    const dal = new RestaurantsDal();
+    const res = dal.mostPopularRestaurants();
+    return res;
+  }
 }

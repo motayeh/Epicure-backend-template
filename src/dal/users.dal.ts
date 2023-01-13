@@ -9,40 +9,44 @@ export class UsersDal {
   public async createUser(user: any) {
     const saltRounds = 10;
     let token;
-    const result = await Users.findOne(
-      { email: user.email } && { userName: user.userName }
-    );
+    const result = await Users.findOne({
+      $or: [{ email: user.email }, { userName: user.userName }],
+    });
     if (result) {
       return 'already exist';
-    }
-    const res = new Promise((resolve, reject) => {
-      bcrypt.hash(user.password, saltRounds, async function (err, hashedPass) {
-        try {
-          user = new Users({
-            userName: user.userName,
-
-            password: hashedPass,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-          });
-          try {
-            token = jwt.sign(
-              { userName: user.userName, email: user.email },
-              'Secret Data'
-            );
-          } catch (err) {
-            return err;
+    } else {
+      const res = new Promise((resolve, reject) => {
+        bcrypt.hash(
+          user.password,
+          saltRounds,
+          async function (err, hashedPass) {
+            try {
+              user = new Users({
+                userName: user.userName,
+                password: hashedPass,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+              });
+              // try {
+              //   token = jwt.sign(
+              //     { userName: user.userName, email: user.email },
+              //     'Secret Data'
+              //   );
+              // } catch (err) {
+              //   return err;
+              // }
+              const response = await Users.create(user);
+              if (response) resolve(user);
+            } catch (err) {
+              reject('error');
+            }
           }
-          const response = await Users.create(user);
-          if (response) resolve(token);
-        } catch (err) {
-          reject('error');
-        }
+        );
       });
-    });
 
-    return res;
+      return res;
+    }
   }
   public async logIn(user: any) {
     const result = await Users.findOne({
@@ -70,6 +74,7 @@ export class UsersDal {
       {
         $project: {
           _id: false,
+          password: false,
         },
       },
     ]);
